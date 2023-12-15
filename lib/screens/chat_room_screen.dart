@@ -18,9 +18,52 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
   final List<Message> messages = [];
 
   @override
+  void initState() {
+    _loadMessages();
+    _startWebSocket();
+
+    messageRepository.subscribeToMessageUpdates((messageData) {
+      final message = Message.fromJson(messageData);
+      if (message.chatRoomId == widget.chatRoom.id) {
+        messages.add(message);
+        messages.sort((a, b) => a.createdAt.compareTo(b.createdAt));
+        setState(() {});
+      }
+    });
+    super.initState();
+  }
+
+  @override
   void dispose() {
     messageController.dispose();
     super.dispose();
+  }
+
+  void _sendMessage() async {
+    final message = Message(
+        chatRoomId: widget.chatRoom.id,
+        senderUserId: userId1,
+        receiverUserId: userId2,
+        content: messageController.text,
+        createdAt: DateTime.now());
+
+    await messageRepository.createMessage(message);
+    messageController.clear();
+  }
+
+  _loadMessages() async {
+    final _messages = await messageRepository.fetchMessages(widget.chatRoom.id);
+
+    _messages.sort((a, b) => a.createdAt.compareTo(b.createdAt));
+
+    setState(() {
+      messages.addAll(_messages);
+    });
+  }
+
+  _startWebSocket() {
+    webSocketClient
+        .connect('ws://localhost:8080/ws', {'Authorization': 'Bearer ....'});
   }
 
   @override
@@ -110,7 +153,9 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
                             borderRadius: BorderRadius.circular(16.0),
                             borderSide: BorderSide.none),
                         suffixIcon: IconButton(
-                          onPressed: () {},
+                          onPressed: () {
+                            _sendMessage();
+                          },
                           icon: Icon(Icons.send),
                         )),
                   ))

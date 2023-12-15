@@ -1,6 +1,18 @@
+import 'package:floki/repositories/message_repository.dart';
 import 'package:floki/screens/chat_room_screen.dart';
+import 'package:floki/services/api_client.dart';
+import 'package:floki/services/websocket_client.dart';
 import 'package:models/models.dart';
 import 'package:flutter/material.dart';
+
+final apiClient = ApiClient(tokenProvider: () async {
+  return '';
+});
+
+final webSocketClient = WebSocketClient();
+
+final messageRepository =
+    MessageRepository(apiClient: apiClient, webSocketClient: webSocketClient);
 
 void main() {
   runApp(const MyApp());
@@ -21,8 +33,8 @@ class MyApp extends StatelessWidget {
   }
 }
 
-const userId1 = '33f771e2-311b-4d4f-9b14-d1e1c59936d3';
-const userId2 = '94a6b01e-319e-494e-b454-98f22ab0d109';
+const userId1 = '05d5d631-5d53-4da2-9bda-b6740281c088';
+const userId2 = 'c25623a9-51d5-4a1b-b1d5-755151efe669';
 
 final chatRoom = ChatRoom(
   id: '8d162274-6cb8-4776-815a-8e721ebfb76d',
