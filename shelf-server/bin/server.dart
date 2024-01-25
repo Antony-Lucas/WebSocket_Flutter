@@ -21,7 +21,7 @@ Handler _wsHandler = webSocketHandler((WebSocketChannel webSocket) {
     print('mensagem do cliente $clientId: $message');
 
     for (var client in connectedClients.values) {
-      client.sink.add('Recebido no servidor pelo cliente $clientId: $message');
+      client.sink.add('$message');
     }
   });
 

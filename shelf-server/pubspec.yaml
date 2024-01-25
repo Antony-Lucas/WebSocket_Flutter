@@ -14,6 +14,7 @@ dependencies:
   shelf_web_socket: ^1.0.4
   uuid: ^4.3.3
   web_socket_channel: ^2.4.3
+  microphone: ^0.1.0
 
 dev_dependencies:
   http: ^1.1.0
